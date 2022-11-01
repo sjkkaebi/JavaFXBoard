@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN"
+ "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="test">
+	
+	<!-- 쿼리의 결과값을 매칭시켜 VO객체에 바로 담기 위한 resultMap 설정 -->
+	<resultMap id="TestResult" class = "vo.BoardVO">
+		<result column="BOARD_ID" property="boardId"/>
+		<result column="BOARD_TITLE" property="boardTitle"/>
+		<result column="BOARD_WRITER" property="boardWriter"/>
+		<result column="BOARD_CONTENT" property="boardContent"/>
+		<result column="BOARD_DATE" property="boardDate"/>
+	</resultMap>
+	
+	
+	<!-- select쿼리 - resultMap을 TestResult로 설정하였으므로 -->
+	<!-- 최종적으로는 결과값이 BoardVO로 반환하게 됨 -->
+	<select id="selectTest" parameterClass="java.util.HashMap" resultMap="TestResult">
+		SELECT
+	    	board_id
+	    	,board_title
+	    	,board_writer
+	    	,board_content
+	    	,date_format(board_date, '%Y.%m.%d %H:%i:%s') as board_date
+	    FROM
+	    	fx_board
+	    WHERE 1=1
+	    <isNotEmpty property="boardId" prepend="AND">
+	    	board_id = #boardId#
+	    </isNotEmpty>
+	    <isNotEmpty property="boardTitle" prepend="AND">
+	    	board_title LIKE CONCAT('%', #boardTitle#, '%')
+	    </isNotEmpty>
+	    <isNotEmpty property="boardWriter" prepend="AND">
+	    	board_writer = #boardWriter#
+	    </isNotEmpty>
+	    ORDER BY board_date DESC
+	</select>
+	
+	<insert id="insertTest" parameterClass="java.util.HashMap">
+		INSERT INTO fx_board
+		(board_title, board_writer, board_date, board_content)
+		VALUES
+		(#boardTitle#, #boardWriter#, NOW(), #boardContent#)
+	</insert>
+	
+	<update id = "updateTest" parameterClass="java.util.HashMap">
+		UPDATE fx_board 
+		SET
+		    board_title = #boardTitle#,
+			board_writer = #boardWriter#,
+			board_date = NOW(),
+			board_content = #boardContent#
+		WHERE 
+			 board_id=#boardId#
+	</update>
+	
+	<delete id = "deleteTest" parameterClass="java.util.HashMap">
+		DELETE FROM fx_board
+		WHERE board_id = #boardId#
+	</delete>
+</sqlMap>

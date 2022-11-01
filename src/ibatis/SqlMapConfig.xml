@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL MAP Config 2.0//EN"
+ "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+	<!-- DB 접속정보 프로퍼티 정보를 어디에서 불어올 것인가를 설정하는 부분 -->
+	<properties resource = "ibatis/SqlMapConfig.properties"/>
+	
+	<!-- iBatis 환경설정 -->
+	<settings
+		cacheModelsEnabled="true"
+		enhancementEnabled="true"
+		lazyLoadingEnabled="true"
+		maxRequests="32" 
+		maxSessions="10"
+		maxTransactions="5"
+		useStatementNamespaces="true"
+	/>
+	
+	<!-- DB 접속 트랜잭션 설정 부분 - 위에서 선언되어 있는 SqlMapConfig.properties -->
+	<!-- 로부터 값을 불러와 넣는곳 -->
+	<transactionManager type="JDBC">
+		<dataSource type="SIMPLE">
+			<property name="JDBC.Driver" value="${driver}"/>
+			<property name="JDBC.ConnectionURL" value="${url}"/>
+			<property name="JDBC.Username" value="${username}"/>
+			<property name="JDBC.Password" value="${password}"/>
+		</dataSource>
+	</transactionManager>
+	
+	<!-- 쿼리가 들어있는 sqlMap을 불러오는 부분 -->
+	<!-- 만약 SqlMap을 여러개로 나누어 놓았다면 여러개를 선언해 놓아야 함 -->
+	<sqlMap resource="ibatis/SqlMap.xml"/>
+	
+	
+</sqlMapConfig>
